@@ -1,4 +1,4 @@
-package com.example.myapplication.network
+package com.example.newsapplication.network
 
 import retrofit2.http.GET
 import retrofit2.http.Url

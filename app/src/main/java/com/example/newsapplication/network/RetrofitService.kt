@@ -1,6 +1,6 @@
-package com.example.myapplication.network
+package com.example.newsapplication.network
 
-import com.example.myapplication.utils.BASE_URL
+import com.example.newsapplication.utils.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,6 +17,7 @@ class RetrofitService {
          * @param serviceClass - service class interface
          */
 
-        val networkService = mRetrofit.create(NetworkService::class.java)
+        val networkService = mRetrofit.create(
+            NetworkService::class.java)
     }
 }

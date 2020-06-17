@@ -1,4 +1,4 @@
-package com.example.myapplication.network
+package com.example.newsapplication.network
 
 class NetworkResource<out T>(
     var status: Status?,
@@ -33,7 +33,11 @@ class NetworkResource<out T>(
 
 
         fun <T> loading(data: T?): NetworkResource<T> =
-            NetworkResource(status = Status.LOADING, data = data, message = null)
+            NetworkResource(
+                status = Status.LOADING,
+                data = data,
+                message = null
+            )
     }
 
     /**

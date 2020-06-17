@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.fragments
+package com.example.newsapplication.ui.fragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -6,17 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.myapplication.R
-import com.example.myapplication.ui.viewmodels.NewsHeadlinesViewModel
+import com.example.newsapplication.R
+import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
 
-class NewsHeadlinesFragment : Fragment() {
+class TopHeadlinesFragment : Fragment() {
 
     companion object {
         fun newInstance() =
-            NewsHeadlinesFragment()
+            TopHeadlinesFragment()
     }
 
-    private lateinit var viewModel: NewsHeadlinesViewModel
+    private lateinit var viewModel: TopHeadlinesViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -25,7 +25,7 @@ class NewsHeadlinesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NewsHeadlinesViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(TopHeadlinesViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
