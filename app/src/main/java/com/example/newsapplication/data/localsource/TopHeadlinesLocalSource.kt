@@ -1,4 +1,10 @@
 package com.example.newsapplication.data.localsource
 
-class TopHeadlinesLocalSource {
+import com.example.newsapplication.interfaces.TopHeadlinesDataSource
+
+class TopHeadlinesLocalSource : TopHeadlinesDataSource {
+    override suspend fun getTopHeadlines(): Any {
+        TODO("Not yet implemented")
+    }
+
 }
