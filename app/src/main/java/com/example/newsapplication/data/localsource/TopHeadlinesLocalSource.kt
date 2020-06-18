@@ -6,5 +6,4 @@ class TopHeadlinesLocalSource : TopHeadlinesDataSource {
     override suspend fun getTopHeadlines(): Any {
         TODO("Not yet implemented")
     }
-
 }

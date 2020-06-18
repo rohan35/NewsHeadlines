@@ -1,5 +1,8 @@
 package com.example.newsapplication.model
 
+import androidx.room.Entity
+
+@Entity(tableName = "topHeadlines")
 data class TopHeadlines(
     val articles: List<Article>,
     val status: String,
