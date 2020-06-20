@@ -19,13 +19,13 @@ import com.example.newsapplication.network.ServiceHelper
 object DependencyProvider {
 
     fun getHeadlinesViewModelFactory(): TopHeadlinesViewModelFactory {
-        return TopHeadlinesViewModelFactory()
+        return TopHeadlinesViewModelFactory(getTopHeadlinesUseCase())
     }
 
     /**
      * Get the object of Top Headelines use case
      */
-    private fun getTopHeadlinesUseCase(context: Context): TopHeadlinesUseCase {
+    private fun getTopHeadlinesUseCase(): TopHeadlinesUseCase {
         return TopHeadlinesTransformer(getTopHeadlinesRepo(), getWorkManager())
     }
 
@@ -39,7 +39,7 @@ object DependencyProvider {
     /**
      * Get the work manager instance
      */
-    private fun getWorkManager(): WorkManager {
+    fun getWorkManager(): WorkManager {
         return WorkManager.getInstance(NewsApplication.applicationContext())
     }
 

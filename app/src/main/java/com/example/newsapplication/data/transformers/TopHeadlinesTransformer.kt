@@ -10,6 +10,7 @@ import com.example.newsapplication.data.usecase.TopHeadlinesUseCase
 import com.example.newsapplication.model.TopHeadlines
 import com.example.newsapplication.network.NetworkResource
 import com.example.newsapplication.network.NetworkUtils
+import com.example.newsapplication.utils.TAG_OUTPUT
 import com.example.newsapplication.worker.TopHeadlinesWorker
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
@@ -19,17 +20,18 @@ class TopHeadlinesTransformer(
     val topHeadlinesRepo: TopHeadlinesRepo,
     private val workManager: WorkManager
 ) : TopHeadlinesUseCase {
-    private val TAG_OUTPUT = "workTag"
     override fun getTopHeadlines(): LiveData<NetworkResource<TopHeadlines?>> =
         liveData(Dispatchers.IO) {
             try {
-                if(NetworkUtils.verifyAvailableNetwork(NewsApplication.applicationContext()))
-                {
+                if (!NetworkUtils.verifyAvailableNetwork(NewsApplication.applicationContext())) {
+                    emit(
+                        NetworkResource.success(
+                            data = topHeadlinesRepo.getTopHeadlinesLocally()
+                        )
+                    )
+                    return@liveData
+                } else {
                     runWorkManagerTask()
-                }
-                else
-                {
-                    topHeadlinesRepo.getTopHeadlinesLocally()
                 }
 
             } catch (exception: Exception) {
@@ -58,7 +60,7 @@ class TopHeadlinesTransformer(
             .build()
     }
 
-    fun runWorkManagerTask() {
+    private fun runWorkManagerTask() {
         workManager.enqueueUniquePeriodicWork(
             TAG_OUTPUT,
             ExistingPeriodicWorkPolicy.REPLACE,
