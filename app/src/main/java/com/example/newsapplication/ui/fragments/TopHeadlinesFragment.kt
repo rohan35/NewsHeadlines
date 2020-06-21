@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.TopHeadlinesFragmentBinding
 import com.example.newsapplication.dependencyInjector.DependencyProvider
@@ -16,16 +17,20 @@ import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
 import com.example.newsapplication.utils.TAG_OUTPUT
 
 class TopHeadlinesFragment : Fragment() {
-    private var mBinding:TopHeadlinesFragmentBinding? = null
+    private var mBinding: TopHeadlinesFragmentBinding? = null
+
     companion object {
         fun newInstance() =
             TopHeadlinesFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         // init data binding
-        mBinding= DataBindingUtil.inflate(inflater,R.layout.top_headlines_fragment, container, false)
+        mBinding =
+            DataBindingUtil.inflate(inflater, R.layout.top_headlines_fragment, container, false)
         // adding assertion as we have created object above and we are sure it will not be null
         return mBinding!!.root
     }
@@ -37,19 +42,28 @@ class TopHeadlinesFragment : Fragment() {
         processErrorLiveData()
     }
 
-    private fun processWorkManagerResponse()
-    {
+    private fun processWorkManagerResponse() {
+        DependencyProvider.getWorkManager()
+            // requestId is the WorkRequest id
+            .getWorkInfosByTagLiveData(TAG_OUTPUT)
+            .observe(viewLifecycleOwner, Observer {
+                if (!it.isNullOrEmpty()) {
+                    val workInfo = it[0]
+                    workInfo?.let {
+
+                    }
+                }
+            })
     }
-    private fun processErrorLiveData()
-    {
-        getViewModel().errorLiveData.observe(viewLifecycleOwner, Observer {
-            response->
-            response?.let {
-                errorResponse->
+
+    private fun processErrorLiveData() {
+        getViewModel().errorLiveData.observe(viewLifecycleOwner, Observer { response ->
+            response?.let { errorResponse ->
                 // show error
             }
         })
     }
+
     /**
      * getViewModel() provides the object of viewModel with the help [DependencyProvider]
      */

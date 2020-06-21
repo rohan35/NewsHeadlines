@@ -35,7 +35,7 @@ class TopHeadlinesWorker(
                         TopHeadlines::class.java
                     )!!
                 )
-                Result.success()
+                return@coroutineScope Result.success()
             }
             Result.failure()
         } catch (exception: Exception) {

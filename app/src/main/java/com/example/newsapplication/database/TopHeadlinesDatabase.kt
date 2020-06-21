@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.newsapplication.model.TopHeadlines
+import com.example.newsapplication.utils.RoomTypeConverters
 
 /**
  * The Room Database that contains the top headlines table.
@@ -12,6 +14,7 @@ import com.example.newsapplication.model.TopHeadlines
  * Note that exportSchema should be true in production databases.
  */
 @Database(entities = [TopHeadlines::class],version = 1,exportSchema = false)
+@TypeConverters(RoomTypeConverters::class)
 abstract class TopHeadlinesDatabase :RoomDatabase(){
     abstract fun topHeadlinesDao():TopHeadlinesDao
     companion object {

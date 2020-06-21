@@ -22,19 +22,20 @@ class TopHeadlinesViewModel(var topHeadlinesUseCase: TopHeadlinesUseCase) : View
         topHeadlinesUseCase.getTopHeadlines().observeOnce(Observer { networkResponse ->
             networkResponse?.let {
                 when (networkResponse.status) {
-                    NetworkResource.Status.LOADING -> {
-                        // show loader
-                    }
                     NetworkResource.Status.SUCCESS -> {
                         networkResponse?.data?.let {
                             // show data to the UI
                             topHeadlines ->
-
+                            System.out.println("HUla"+topHeadlines.totalResults)
                         }
                     }
                     NetworkResource.Status.ERROR -> {
                         // show error
                         _errorLiveData.value = networkResponse.message?: ERROR_OCCURRED
+                    }
+                    else->
+                    {
+
                     }
                 }
             }
