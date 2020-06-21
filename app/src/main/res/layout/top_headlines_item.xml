@@ -7,11 +7,19 @@
             name="topHeadlinesArticle"
             type="com.example.newsapplication.model.Article" />
     </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        app:cardCornerRadius="4dp"
+        >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/dp_8"
         android:layout_height="wrap_content">
 
 
@@ -28,6 +36,8 @@
             android:id="@+id/tv_headlines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Header"
+            android:layout_marginTop="@dimen/dp_8"
             android:text="@{topHeadlinesArticle.title}"
             app:layout_constraintTop_toBottomOf="@id/imageView"
             tools:layout_editor_absoluteX="152dp"
@@ -38,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{topHeadlinesArticle.source.name}"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_headlines"
             tools:layout_editor_absoluteX="40dp"
@@ -48,9 +59,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{topHeadlinesArticle.publishedAt}"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/tv_source"
-            app:layout_constraintTop_toBottomOf="@id/tv_source"
+            app:layout_constraintTop_toBottomOf="@id/tv_headlines"
             tools:layout_editor_absoluteX="152dp"
             tools:layout_editor_absoluteY="233dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Header">
+        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textColor">@color/color_414042</item>
+    </style>
+
 </resources>

@@ -41,4 +41,11 @@ class TopHeadlinesViewModel(private var topHeadlinesUseCase: TopHeadlinesUseCase
     fun getIsLoading(): MutableLiveData<Boolean?>? {
         return mIsLoading
     }
+
+    fun getArticle(autoId:Int): Article?
+    {
+       return articleList.find {
+            it.autoId == autoId
+        }
+    }
 }

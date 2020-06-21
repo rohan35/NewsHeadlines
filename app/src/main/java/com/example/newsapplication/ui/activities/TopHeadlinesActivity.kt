@@ -13,7 +13,7 @@ class TopHeadlinesActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, TopHeadlinesFragment.newInstance())
-                    .commitNow()
+                    .commit()
         }
     }
 }

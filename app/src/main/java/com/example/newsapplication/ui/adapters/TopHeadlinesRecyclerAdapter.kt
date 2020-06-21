@@ -9,7 +9,7 @@ import com.example.newsapplication.model.Article
 
 class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var onPageFinished: ((pageNumber:Int) -> Unit)? = null
+    var onItemClick: ((id:Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return HeadlinesViewHolder(
             TopHeadlinesItemBinding.inflate(
@@ -30,6 +30,11 @@ class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
 
     inner class HeadlinesViewHolder(private var mBinding: TopHeadlinesItemBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
+        init {
+            mBinding.cardView.setOnClickListener {
+                onItemClick?.invoke(articleList[adapterPosition].autoId?:0)
+            }
+        }
         fun bind(data: Article) {
             mBinding.setVariable(BR.topHeadlinesArticle, data)
         }

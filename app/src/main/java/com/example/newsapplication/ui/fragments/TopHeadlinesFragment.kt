@@ -56,6 +56,13 @@ class TopHeadlinesFragment : Fragment() {
             TopHeadlinesRecyclerAdapter(getViewModel().articleList)
         mBinding?.rvTopHeadlines?.adapter = mAdapter
         setRecyclerViewScrollListener()
+        mAdapter!!.onItemClick = {
+            val fragment =  TopHeadlinesDetailsFragment.newInstance(it)
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.container, fragment)
+                ?.addToBackStack(TopHeadlinesDetailsFragment.TAG)
+                ?.commit()
+        }
     }
     private fun processWorkManagerResponse() {
         DependencyProvider.getWorkManager()
@@ -110,7 +117,7 @@ class TopHeadlinesFragment : Fragment() {
      * getViewModel() provides the object of viewModel with the help [DependencyProvider]
      */
     private fun getViewModel(): TopHeadlinesViewModel {
-        return ViewModelProvider(this, DependencyProvider.getHeadlinesViewModelFactory()).get(
+        return ViewModelProvider(activity!!, DependencyProvider.getHeadlinesViewModelFactory()).get(
             TopHeadlinesViewModel::class.java
         )
     }
