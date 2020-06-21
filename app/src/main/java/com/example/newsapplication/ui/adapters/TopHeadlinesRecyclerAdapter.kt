@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.BR
 import com.example.newsapplication.databinding.TopHeadlinesItemBinding
+import com.example.newsapplication.model.Article
 import com.example.newsapplication.model.TopHeadlines
 
-class TopHeadlinesRecyclerAdapter :
+class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       return HeadlinesViewHolder(
+        return HeadlinesViewHolder(
             TopHeadlinesItemBinding.inflate(
                 LayoutInflater.from(
                     parent.context
@@ -20,17 +21,17 @@ class TopHeadlinesRecyclerAdapter :
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return articleList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        (holder as HeadlinesViewHolder).bind(articleList[position] as Article)
     }
 
     inner class HeadlinesViewHolder(private var mBinding: TopHeadlinesItemBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
-        fun bind(data: TopHeadlines) {
-            mBinding.setVariable(BR.topHeadlinesViewModel, data)
+        fun bind(data: Article) {
+            mBinding.setVariable(BR.topHeadlinesArticle, data)
         }
     }
 }

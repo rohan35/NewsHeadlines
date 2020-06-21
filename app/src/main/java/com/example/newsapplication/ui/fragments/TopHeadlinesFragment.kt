@@ -13,12 +13,13 @@ import androidx.work.WorkInfo
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.TopHeadlinesFragmentBinding
 import com.example.newsapplication.dependencyInjector.DependencyProvider
+import com.example.newsapplication.ui.adapters.TopHeadlinesRecyclerAdapter
 import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
 import com.example.newsapplication.utils.TAG_OUTPUT
 
 class TopHeadlinesFragment : Fragment() {
     private var mBinding: TopHeadlinesFragmentBinding? = null
-
+    private var mAdapter:TopHeadlinesRecyclerAdapter? = null
     companion object {
         fun newInstance() =
             TopHeadlinesFragment()
@@ -40,6 +41,7 @@ class TopHeadlinesFragment : Fragment() {
         getViewModel().getTopHeadlines()
         processWorkManagerResponse()
         processErrorLiveData()
+        processArticleList()
     }
 
     private fun processWorkManagerResponse() {
@@ -60,6 +62,15 @@ class TopHeadlinesFragment : Fragment() {
         getViewModel().errorLiveData.observe(viewLifecycleOwner, Observer { response ->
             response?.let { errorResponse ->
                 // show error
+            }
+        })
+    }
+
+    private fun processArticleList() {
+        getViewModel().articleListLiveData.observe(viewLifecycleOwner, Observer { responseList ->
+            if (!responseList.isNullOrEmpty()) {
+                mAdapter = TopHeadlinesRecyclerAdapter(responseList)
+                mBinding?.rvTopHeadlines?.adapter = mAdapter
             }
         })
     }

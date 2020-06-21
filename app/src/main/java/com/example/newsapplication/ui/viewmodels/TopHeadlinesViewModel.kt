@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.newsapplication.data.usecase.TopHeadlinesUseCase
+import com.example.newsapplication.model.Article
 import com.example.newsapplication.network.NetworkResource
 import com.example.newsapplication.utils.ERROR_OCCURRED
 import com.example.newsapplication.utils.observeOnce
@@ -14,6 +15,11 @@ class TopHeadlinesViewModel(var topHeadlinesUseCase: TopHeadlinesUseCase) : View
     private var _errorLiveData = MutableLiveData<String>()
     val errorLiveData:LiveData<String>
     get() = _errorLiveData
+
+        //list live data
+    private var _articleListLiveData = MutableLiveData<List<Article>>()
+    val articleListLiveData:LiveData<List<Article>>
+    get() = _articleListLiveData
 
     //view loader live data
     var isLoading = MutableLiveData<Boolean>().apply { value = false }
@@ -26,7 +32,7 @@ class TopHeadlinesViewModel(var topHeadlinesUseCase: TopHeadlinesUseCase) : View
                         networkResponse?.data?.let {
                             // show data to the UI
                             topHeadlines ->
-                            System.out.println("HUla"+topHeadlines.totalResults)
+                            _articleListLiveData.value = topHeadlines.articles
                         }
                     }
                     NetworkResource.Status.ERROR -> {
