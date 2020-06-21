@@ -6,45 +6,39 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.newsapplication.data.usecase.TopHeadlinesUseCase
 import com.example.newsapplication.model.Article
+import com.example.newsapplication.model.TopHeadlines
 import com.example.newsapplication.network.NetworkResource
 import com.example.newsapplication.utils.ERROR_OCCURRED
 import com.example.newsapplication.utils.observeOnce
 
-class TopHeadlinesViewModel(var topHeadlinesUseCase: TopHeadlinesUseCase) : ViewModel() {
+class TopHeadlinesViewModel(private var topHeadlinesUseCase: TopHeadlinesUseCase) : ViewModel() {
     // error
     private var _errorLiveData = MutableLiveData<String>()
-    val errorLiveData:LiveData<String>
-    get() = _errorLiveData
+    val errorLiveData: LiveData<String>
+        get() = _errorLiveData
+    var pageNumber = 1
 
-        //list live data
-    private var _articleListLiveData = MutableLiveData<List<Article>>()
-    val articleListLiveData:LiveData<List<Article>>
-    get() = _articleListLiveData
+    //list live data
+    var articleList = mutableListOf<Article>()
 
     //view loader live data
-    var isLoading = MutableLiveData<Boolean>().apply { value = false }
+    private val mIsLoading: MutableLiveData<Boolean?> = MutableLiveData()
 
-    fun getTopHeadlines() {
-        topHeadlinesUseCase.getTopHeadlines().observeOnce(Observer { networkResponse ->
-            networkResponse?.let {
-                when (networkResponse.status) {
-                    NetworkResource.Status.SUCCESS -> {
-                        networkResponse?.data?.let {
-                            // show data to the UI
-                            topHeadlines ->
-                            _articleListLiveData.value = topHeadlines.articles
-                        }
-                    }
-                    NetworkResource.Status.ERROR -> {
-                        // show error
-                        _errorLiveData.value = networkResponse.message?: ERROR_OCCURRED
-                    }
-                    else->
-                    {
+    fun getTopHeadlines(): LiveData<List<Article>?>? {
+        return topHeadlinesUseCase.getTopHeadlines()
+    }
 
-                    }
-                }
-            }
-        })
+    fun runWorkManager(adapterPosition: Int) {
+        setIsLoading(true)
+        pageNumber = adapterPosition.div(10) + 1
+        topHeadlinesUseCase.runWorkManagerTask(pageNumber)
+    }
+
+    fun setIsLoading(isLoading: Boolean) {
+        mIsLoading.value = isLoading
+    }
+
+    fun getIsLoading(): MutableLiveData<Boolean?>? {
+        return mIsLoading
     }
 }

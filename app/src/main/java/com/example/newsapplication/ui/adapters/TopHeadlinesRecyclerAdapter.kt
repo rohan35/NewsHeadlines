@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.BR
 import com.example.newsapplication.databinding.TopHeadlinesItemBinding
 import com.example.newsapplication.model.Article
-import com.example.newsapplication.model.TopHeadlines
 
 class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var onPageFinished: ((pageNumber:Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return HeadlinesViewHolder(
             TopHeadlinesItemBinding.inflate(
@@ -33,5 +33,10 @@ class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
         fun bind(data: Article) {
             mBinding.setVariable(BR.topHeadlinesArticle, data)
         }
+    }
+    fun setData(articleList: List<Article>)
+    {
+        this.articleList = articleList
+        notifyDataSetChanged()
     }
 }

@@ -2,6 +2,7 @@ package com.example.newsapplication.utils
 
 import androidx.room.TypeConverter
 import com.example.newsapplication.model.Article
+import com.example.newsapplication.model.Source
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
@@ -11,21 +12,19 @@ object RoomTypeConverters {
 
     @TypeConverter
     @JvmStatic
-    fun articleStringToList(data: String?): List<Article> {
-        if (data == null) {
-            return Collections.emptyList()
-        }
-
-        val listType = object : TypeToken<List<Article>>() {
+    fun sourceStringToObject(data: String?): Source? {
+        if (data == null)
+            return null
+        val type = object : TypeToken<Source>() {
 
         }.type
 
-        return gson.fromJson<List<Article>>(data, listType)
+        return gson.fromJson<Source>(data, type)
     }
 
     @TypeConverter
     @JvmStatic
-    fun articleListToString(channelList: List<Article>): String {
-        return gson.toJson(channelList)
+    fun sourceObjectToString(data: Source): String {
+        return gson.toJson(data)
     }
 }

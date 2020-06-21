@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.newsapplication.model.Article
 import com.example.newsapplication.model.TopHeadlines
 import com.example.newsapplication.utils.RoomTypeConverters
 
@@ -13,7 +14,7 @@ import com.example.newsapplication.utils.RoomTypeConverters
  *
  * Note that exportSchema should be true in production databases.
  */
-@Database(entities = [TopHeadlines::class],version = 1,exportSchema = false)
+@Database(entities = [Article::class],version = 2,exportSchema = false)
 @TypeConverters(RoomTypeConverters::class)
 abstract class TopHeadlinesDatabase :RoomDatabase(){
     abstract fun topHeadlinesDao():TopHeadlinesDao

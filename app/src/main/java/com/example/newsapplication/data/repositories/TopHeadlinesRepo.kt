@@ -3,6 +3,7 @@ package com.example.newsapplication.data.repositories
 import com.example.newsapplication.data.localsource.TopHeadlinesLocalSource
 import com.example.newsapplication.data.remotesource.TopHeadlinesRemoteSource
 import com.example.newsapplication.interfaces.TopHeadlinesDataSource
+import com.example.newsapplication.model.Article
 import com.example.newsapplication.model.TopHeadlines
 
 class TopHeadlinesRepo(private val topHeadlinesLocalSource: TopHeadlinesDataSource,
@@ -10,18 +11,18 @@ class TopHeadlinesRepo(private val topHeadlinesLocalSource: TopHeadlinesDataSour
   /**
    * get top headlines remotely
    */
-  suspend fun getTopHeadlines() = topHeadlinesRemoteSource.getTopHeadlines()
+  suspend fun getTopHeadlines(pageSize:Int) = topHeadlinesRemoteSource.getTopHeadlines(pageSize)
   /**
    * get top headlines locally
    */
-  suspend fun getTopHeadlinesLocally() = topHeadlinesLocalSource.getTopHeadlinesLocally()
+ fun getTopHeadlinesLocally() = topHeadlinesLocalSource.getTopHeadlinesLocally()
 
     /**
      * Insert items into database
       */
-   suspend fun insertTopHeadlines(topHeadlines: TopHeadlines)
+   suspend fun insertTopHeadlines(article: Article)
     {
-        topHeadlinesLocalSource.insertTopHeadlinesLocally(topHeadlines)
+        topHeadlinesLocalSource.insertTopHeadlinesLocally(article)
     }
    suspend fun deleteTopHeadlines()
    {
