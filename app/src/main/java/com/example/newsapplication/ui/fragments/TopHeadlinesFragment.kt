@@ -1,6 +1,5 @@
 package com.example.newsapplication.ui.fragments
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,16 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.WorkInfo
 import com.example.newsapplication.BR
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.TopHeadlinesFragmentBinding
 import com.example.newsapplication.dependencyInjector.DependencyProvider
 import com.example.newsapplication.ui.adapters.TopHeadlinesRecyclerAdapter
 import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
-import com.example.newsapplication.utils.TAG_OUTPUT
-import com.example.newsapplication.utils.TOTAL_RESULTS
-import com.example.newsapplication.utils.WORK_MANAGER_TAG
 
 class TopHeadlinesFragment : Fragment() {
     private var mBinding: TopHeadlinesFragmentBinding? = null
@@ -86,6 +81,7 @@ class TopHeadlinesFragment : Fragment() {
         getViewModel().errorLiveData.observe(viewLifecycleOwner, Observer { response ->
             response?.let { errorResponse ->
                 // show error
+
             }
         })
     }
