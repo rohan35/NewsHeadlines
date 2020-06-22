@@ -23,4 +23,10 @@ class TopHeadlinesLocalSource(private var topHeadlinesDao: TopHeadlinesDao) :
         topHeadlinesDao.deleteAll()
     }
 
+    override suspend fun updateTotalResults(topHeadlines: TopHeadlines) {
+        topHeadlinesDao.updateTotalResults(topHeadlines)
+    }
+
+    override fun getTotalResults(): LiveData<Int>? = topHeadlinesDao.getTotalResults()
+
 }

@@ -1,5 +1,6 @@
 package com.example.newsapplication.data.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.newsapplication.data.localsource.TopHeadlinesLocalSource
 import com.example.newsapplication.data.remotesource.TopHeadlinesRemoteSource
 import com.example.newsapplication.interfaces.TopHeadlinesDataSource
@@ -24,9 +25,13 @@ class TopHeadlinesRepo(private val topHeadlinesLocalSource: TopHeadlinesDataSour
     {
         topHeadlinesLocalSource.insertTopHeadlinesLocally(article)
     }
-   suspend fun deleteTopHeadlines()
-   {
-       topHeadlinesLocalSource
-   }
+    suspend fun deleteTopHeadlines() {
+        topHeadlinesLocalSource
+    }
 
+    suspend fun updateTotalResults(topHeadlines: TopHeadlines) {
+        topHeadlinesLocalSource.updateTotalResults(topHeadlines)
+    }
+
+    fun getTotalResults():LiveData<Int>? = topHeadlinesLocalSource.getTotalResults()
 }

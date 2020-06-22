@@ -1,19 +1,22 @@
 package com.example.newsapplication.model
 
-import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.newsapplication.utils.RoomTypeConverters
 
-data class TopHeadlines(
-    val id: Int? = null,
-    @TypeConverters(RoomTypeConverters::class)
-    val articles: List<Article>,
-    val status: String? = null,
-    val totalResults: Int? = null
-)
 @Entity(tableName = "topHeadlines")
+data class TopHeadlines(
+    @PrimaryKey(autoGenerate = true)
+    var headlineId: Int? = null,
+    @Ignore
+    val articles: List<Article>? = null,
+    @Ignore
+    val status: String? = null,
+    var totalResults: Int? = null
+)
+@Entity(tableName = "article")
 data class Article(
     @PrimaryKey(autoGenerate = true)
     val autoId: Int? = null,

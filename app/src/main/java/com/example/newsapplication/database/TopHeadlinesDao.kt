@@ -1,10 +1,7 @@
 package com.example.newsapplication.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.newsapplication.model.Article
 import com.example.newsapplication.model.TopHeadlines
 
@@ -16,8 +13,9 @@ interface TopHeadlinesDao {
      *
      * @return all data.
      */
-    @Query("SELECT * from topHeadlines")
-     fun getTopHeadlines(): LiveData<List<Article>?>
+    @Query("SELECT * from article")
+    fun getTopHeadlines(): LiveData<List<Article>?>
+
     /**
      * Insert a topHeadline in the database. If the topHeadline already exists, replace it.
      *
@@ -30,6 +28,18 @@ interface TopHeadlinesDao {
      * Delete all headlines.
      */
 
-    @Query("DELETE FROM topHeadlines")
+    @Query("DELETE FROM article")
     suspend fun deleteAll()
+
+    /**
+     * update result every time for total quantity
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTotalResults(topHeadlines: TopHeadlines)
+
+    /**
+     * get total quantity
+     */
+    @Query("SELECT totalResults from topHeadlines")
+    fun getTotalResults(): LiveData<Int>
 }

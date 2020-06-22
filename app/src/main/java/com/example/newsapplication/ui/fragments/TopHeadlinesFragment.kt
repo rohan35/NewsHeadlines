@@ -19,6 +19,8 @@ import com.example.newsapplication.dependencyInjector.DependencyProvider
 import com.example.newsapplication.ui.adapters.TopHeadlinesRecyclerAdapter
 import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
 import com.example.newsapplication.utils.TAG_OUTPUT
+import com.example.newsapplication.utils.TOTAL_RESULTS
+import com.example.newsapplication.utils.WORK_MANAGER_TAG
 
 class TopHeadlinesFragment : Fragment() {
     private var mBinding: TopHeadlinesFragmentBinding? = null
@@ -45,9 +47,9 @@ class TopHeadlinesFragment : Fragment() {
         mBinding?.setLifecycleOwner(viewLifecycleOwner)
         mBinding?.setVariable(BR.viewModel,getViewModel())
         setUpRecyclerView()
-        processWorkManagerResponse()
         processErrorLiveData()
         processArticleList()
+        processAdapterPadding()
     }
 
     private fun setUpRecyclerView()
@@ -64,18 +66,20 @@ class TopHeadlinesFragment : Fragment() {
                 ?.commit()
         }
     }
-    private fun processWorkManagerResponse() {
-        DependencyProvider.getWorkManager()
-            // requestId is the WorkRequest id
-            .getWorkInfosByTagLiveData(TAG_OUTPUT)
-            .observe(viewLifecycleOwner, Observer {
-                if (!it.isNullOrEmpty()) {
-                    val workInfo = it[0]
-                    workInfo?.let {
 
-                    }
-                }
-            })
+    private fun processAdapterPadding()
+    {
+        getViewModel().adapterPadding.observe(viewLifecycleOwner, Observer {
+            showPadding->
+            if(showPadding)
+            {
+                val padding = resources.getDimensionPixelOffset(R.dimen.dp_50)
+                mBinding?.rvTopHeadlines?.setPadding(0,0,0,padding)
+            }
+            else{
+                mBinding?.rvTopHeadlines?.setPadding(0,0,0,0)
+            }
+        })
     }
 
     private fun processErrorLiveData() {

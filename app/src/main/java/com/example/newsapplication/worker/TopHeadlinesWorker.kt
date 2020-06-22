@@ -2,13 +2,16 @@ package com.example.newsapplication.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.newsapplication.data.repositories.TopHeadlinesRepo
 import com.example.newsapplication.dependencyInjector.DependencyProvider
 import com.example.newsapplication.model.TopHeadlines
 import com.example.newsapplication.network.NetworkUtils
 import com.example.newsapplication.utils.PAGE_NUMBER_PARAM_KEY
 import com.example.newsapplication.utils.PAGE_SIZE_PARAM_KEY
+import com.example.newsapplication.utils.TOTAL_RESULTS
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,8 +38,9 @@ class TopHeadlinesWorker(
                         (response)).asJsonObject.toString(),
                     TopHeadlines::class.java
                 )!!
+                topHeadlinesRepo.updateTotalResults(topHeadlinesObject)
                 // adding assertion as null check is already added
-                topHeadlinesObject.articles.forEach {
+                topHeadlinesObject.articles?.forEach {
                     topHeadlinesRepo.insertTopHeadlines(it)
                 }
 

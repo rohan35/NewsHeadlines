@@ -8,4 +8,5 @@ import com.example.newsapplication.network.NetworkResource
 interface TopHeadlinesUseCase {
     fun getTopHeadlines(): LiveData<List<Article>?>?
     fun runWorkManagerTask(pageNumber:Int)
+    fun getTotalResults():LiveData<Int>?
 }

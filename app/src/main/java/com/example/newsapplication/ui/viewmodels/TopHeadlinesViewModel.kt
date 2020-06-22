@@ -17,9 +17,10 @@ class TopHeadlinesViewModel(private var topHeadlinesUseCase: TopHeadlinesUseCase
     val errorLiveData: LiveData<String>
         get() = _errorLiveData
     var pageNumber = 1
-
     //list live data
     var articleList = mutableListOf<Article>()
+
+    var adapterPadding = MutableLiveData<Boolean>().apply { value = false }
 
     //view loader live data
     private val mIsLoading: MutableLiveData<Boolean?> = MutableLiveData()
@@ -29,9 +30,17 @@ class TopHeadlinesViewModel(private var topHeadlinesUseCase: TopHeadlinesUseCase
     }
 
     fun runWorkManager(adapterPosition: Int) {
-        setIsLoading(true)
-        pageNumber = adapterPosition.div(10) + 1
-        topHeadlinesUseCase.runWorkManagerTask(pageNumber)
+        topHeadlinesUseCase.getTotalResults()?.observeOnce(Observer {totalResults->
+            if(adapterPosition <= totalResults?:0) {
+                adapterPadding.value = true
+                setIsLoading(true)
+                pageNumber = adapterPosition.div(10) + 1
+                topHeadlinesUseCase.runWorkManagerTask(pageNumber)
+            }
+            else{
+                adapterPadding.value = false
+            }
+        })
     }
 
     fun setIsLoading(isLoading: Boolean) {

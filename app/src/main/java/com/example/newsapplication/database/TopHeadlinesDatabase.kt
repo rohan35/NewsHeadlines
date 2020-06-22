@@ -14,7 +14,7 @@ import com.example.newsapplication.utils.RoomTypeConverters
  *
  * Note that exportSchema should be true in production databases.
  */
-@Database(entities = [Article::class],version = 2,exportSchema = false)
+@Database(entities = [TopHeadlines::class,Article::class],version = 2,exportSchema = false)
 @TypeConverters(RoomTypeConverters::class)
 abstract class TopHeadlinesDatabase :RoomDatabase(){
     abstract fun topHeadlinesDao():TopHeadlinesDao

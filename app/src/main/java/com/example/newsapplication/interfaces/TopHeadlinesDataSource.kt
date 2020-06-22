@@ -9,4 +9,6 @@ interface TopHeadlinesDataSource {
     fun getTopHeadlinesLocally(): LiveData<List<Article>?>?
     suspend fun insertTopHeadlinesLocally(article: Article)
     suspend fun deleteTopHeadlines()
+    suspend fun updateTotalResults(topHeadlines: TopHeadlines)
+    fun getTotalResults(): LiveData<Int>?
 }

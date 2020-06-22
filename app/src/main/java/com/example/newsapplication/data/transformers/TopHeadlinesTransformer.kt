@@ -8,6 +8,7 @@ import com.example.newsapplication.model.Article
 import com.example.newsapplication.model.TopHeadlines
 import com.example.newsapplication.utils.PAGE_NUMBER_PARAM_KEY
 import com.example.newsapplication.utils.TAG_OUTPUT
+import com.example.newsapplication.utils.WORK_MANAGER_TAG
 import com.example.newsapplication.worker.TopHeadlinesWorker
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
@@ -20,6 +21,7 @@ class TopHeadlinesTransformer(
     override fun getTopHeadlines(): LiveData<List<Article>?>? =
         topHeadlinesRepo.getTopHeadlinesLocally()
 
+
     private fun createConstraints() = Constraints.Builder()
         // other values(NOT_REQUIRED, CONNECTED, NOT_ROAMING, METERED)
         .setRequiresBatteryNotLow(true)                 // if the battery is not low
@@ -31,7 +33,9 @@ class TopHeadlinesTransformer(
         return PeriodicWorkRequestBuilder<TopHeadlinesWorker>(
             2,
             TimeUnit.HOURS
-        )  // setting period to 2 hours
+        )
+            .addTag(WORK_MANAGER_TAG)
+            // setting period to 2 hours
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 2, TimeUnit.HOURS)
             .setConstraints(createConstraints())
             .setInputData(inputData)
@@ -45,5 +49,7 @@ class TopHeadlinesTransformer(
             createWorkRequest(pageNumber)
         )
     }
+
+    override fun getTotalResults(): LiveData<Int>? = topHeadlinesRepo.getTotalResults()
 }
 

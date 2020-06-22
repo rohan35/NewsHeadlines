@@ -9,6 +9,8 @@ import com.example.newsapplication.model.Article
 
 class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val VIEW_TYPE_LOADING =1
+    private val VIEW_TYPE_LIST = 2;
     var onItemClick: ((id:Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return HeadlinesViewHolder(
@@ -19,7 +21,6 @@ class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
             )
         )
     }
-
     override fun getItemCount(): Int {
         return articleList.size
     }

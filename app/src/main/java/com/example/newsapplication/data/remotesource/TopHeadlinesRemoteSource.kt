@@ -29,4 +29,12 @@ class TopHeadlinesRemoteSource(private val appRepo: AppRepo) : TopHeadlinesDataS
           //No implementation
      }
 
+    override suspend fun updateTotalResults( topHeadlines: TopHeadlines) {
+        // no implementation
+    }
+
+    override fun getTotalResults(): LiveData<Int>? {
+       return null
+    }
+
 }
