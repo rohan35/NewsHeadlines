@@ -15,8 +15,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class TopHeadlinesWorkerTest {
-    @RunWith(AndroidJUnit4::class)
-    class SleepWorkerTest {
         private lateinit var context: Context
 
         @Before
@@ -33,4 +31,3 @@ class TopHeadlinesWorkerTest {
             }
         }
     }
-}
