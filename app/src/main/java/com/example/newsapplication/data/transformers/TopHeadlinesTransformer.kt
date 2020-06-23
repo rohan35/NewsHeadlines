@@ -34,8 +34,8 @@ class TopHeadlinesTransformer(
     private fun createWorkRequest(pageNumber: Int): PeriodicWorkRequest {
         val inputData = workDataOf(PAGE_NUMBER_PARAM_KEY to pageNumber)
         return PeriodicWorkRequestBuilder<TopHeadlinesWorker>(
-            15,
-            TimeUnit.MINUTES
+            2,
+            TimeUnit.HOURS
         )
             .addTag(WORK_MANAGER_TAG)
             // setting period to 2 hours
