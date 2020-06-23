@@ -26,13 +26,16 @@ class TopHeadlinesWorker(
     private var topHeadlinesRepo: TopHeadlinesRepo = DependencyProvider.getTopHeadlinesRepo();
     override suspend fun doWork(): Result = coroutineScope {
         try {
+            var pageNumber:Int = 1
             val response = async {
-                val pageNumber = inputData.getInt(PAGE_NUMBER_PARAM_KEY,1)
+                pageNumber = inputData.getInt(PAGE_NUMBER_PARAM_KEY,1)
                 topHeadlinesRepo.getTopHeadlines(pageNumber)
             }.await()
             if (response != null) {
-//                // delete all items
-//                topHeadlinesRepo.deleteTopHeadlines()
+                if (pageNumber == 1) { // delete all items
+                    topHeadlinesRepo.deleteTopHeadlines()
+                }
+
                 val topHeadlinesObject = NetworkUtils.getModelFromJsonString(
                     (Gson().toJsonTree
                         (response)).asJsonObject.toString(),

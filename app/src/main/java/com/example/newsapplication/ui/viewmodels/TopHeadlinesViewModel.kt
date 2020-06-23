@@ -36,7 +36,7 @@ class TopHeadlinesViewModel(private var topHeadlinesUseCase: TopHeadlinesUseCase
      */
     fun runWorkManager(adapterPosition: Int) {
         topHeadlinesUseCase.getTotalResults()?.observeOnce(Observer { totalResults ->
-            if (adapterPosition <= totalResults ?: 0) {
+            if (adapterPosition < totalResults ?: 0 || totalResults?:0 == 0) {
                 removeLoader.value = false
                 var pageNumber = adapterPosition.div(10) + 1
                 if (NetworkUtils.verifyAvailableNetwork(NewsApplication.applicationContext())) {
