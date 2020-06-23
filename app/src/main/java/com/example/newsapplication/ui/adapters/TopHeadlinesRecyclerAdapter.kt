@@ -11,6 +11,7 @@ import com.example.newsapplication.model.ComponentViewType
 
 class TopHeadlinesRecyclerAdapter(var adapterList: ArrayList<ComponentViewType>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var oldSize:Int = 0
     var onItemClick: ((id: Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
@@ -72,6 +73,15 @@ class TopHeadlinesRecyclerAdapter(var adapterList: ArrayList<ComponentViewType>)
 
     fun setData(adapterList: ArrayList<ComponentViewType>) {
         this.adapterList = adapterList
-        notifyDataSetChanged()
+        if(adapterList.size>oldSize)
+        {
+            notifyItemRangeChanged(oldSize,adapterList.size - oldSize)
+            oldSize = adapterList.size
+        }
+        else
+        {
+           notifyDataSetChanged()
+        }
+
     }
 }

@@ -21,7 +21,7 @@ interface TopHeadlinesDao {
      *
      * @param topHeadline the headline to be inserted.
      */
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(topHeadlines: Article)
 
     /**

@@ -45,9 +45,9 @@ class TopHeadlinesWorker(
                 }
                 return@coroutineScope Result.success()
             }
-            Result.retry()
+            Result.failure()
         } catch (exception: Exception) {
-            Result.retry()
+            Result.failure()
         }
     }
 }
