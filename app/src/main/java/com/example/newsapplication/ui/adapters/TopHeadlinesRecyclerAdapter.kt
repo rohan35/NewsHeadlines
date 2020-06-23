@@ -4,45 +4,74 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.BR
+import com.example.newsapplication.databinding.LoadingViewBinding
 import com.example.newsapplication.databinding.TopHeadlinesItemBinding
 import com.example.newsapplication.model.Article
+import com.example.newsapplication.model.ComponentViewType
 
-class TopHeadlinesRecyclerAdapter(var articleList: List<Article>) :
+class TopHeadlinesRecyclerAdapter(var adapterList: ArrayList<ComponentViewType>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val VIEW_TYPE_LOADING =1
-    private val VIEW_TYPE_LIST = 2;
-    var onItemClick: ((id:Int) -> Unit)? = null
+    var onItemClick: ((id: Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return HeadlinesViewHolder(
-            TopHeadlinesItemBinding.inflate(
-                LayoutInflater.from(
-                    parent.context
-                ), parent, false
-            )
-        )
+        when (viewType) {
+            ComponentViewType.VIEW_TYPE_LIST -> {
+                return HeadlinesViewHolder(
+                    TopHeadlinesItemBinding.inflate(
+                        LayoutInflater.from(
+                            parent.context
+                        ), parent, false
+                    )
+                )
+
+            }
+            else -> {
+                return ProgressViewHolder(
+                    LoadingViewBinding.inflate(
+                        LayoutInflater.from(
+                            parent.context
+                        ), parent, false
+                    )
+                )
+            }
+        }
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return adapterList[position].baseType
+    }
+
     override fun getItemCount(): Int {
-        return articleList.size
+        return adapterList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as HeadlinesViewHolder).bind(articleList[position] as Article)
+        if (getItemViewType(position) == ComponentViewType.VIEW_TYPE_LIST)
+            (holder as HeadlinesViewHolder).bind(adapterList[position] as Article)
+        else {
+            (holder as ProgressViewHolder).progressBar.isIndeterminate = true;
+        }
     }
 
     inner class HeadlinesViewHolder(private var mBinding: TopHeadlinesItemBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
         init {
             mBinding.cardView.setOnClickListener {
-                onItemClick?.invoke(articleList[adapterPosition].autoId?:0)
+                onItemClick?.invoke((adapterList[adapterPosition] as Article).autoId?:0)
             }
         }
+
         fun bind(data: Article) {
             mBinding.setVariable(BR.topHeadlinesArticle, data)
         }
     }
-    fun setData(articleList: List<Article>)
-    {
-        this.articleList = articleList
+
+    inner class ProgressViewHolder(private var mBinding: LoadingViewBinding) :
+        RecyclerView.ViewHolder(mBinding.root) {
+        var progressBar = mBinding.progressbar
+    }
+
+    fun setData(adapterList: ArrayList<ComponentViewType>) {
+        this.adapterList = adapterList
         notifyDataSetChanged()
     }
 }

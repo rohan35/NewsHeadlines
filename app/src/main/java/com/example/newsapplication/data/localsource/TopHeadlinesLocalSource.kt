@@ -1,6 +1,7 @@
 package com.example.newsapplication.data.localsource
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.newsapplication.database.TopHeadlinesDao
 import com.example.newsapplication.interfaces.TopHeadlinesDataSource
 import com.example.newsapplication.model.Article
@@ -28,5 +29,8 @@ class TopHeadlinesLocalSource(private var topHeadlinesDao: TopHeadlinesDao) :
     }
 
     override fun getTotalResults(): LiveData<Int>? = topHeadlinesDao.getTotalResults()
+    override fun getLoadingLiveData(liveData: MutableLiveData<Boolean?>): LiveData<Boolean?>? {
+        return null
+    }
 
 }

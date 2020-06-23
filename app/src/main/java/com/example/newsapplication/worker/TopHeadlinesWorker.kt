@@ -43,12 +43,11 @@ class TopHeadlinesWorker(
                 topHeadlinesObject.articles?.forEach {
                     topHeadlinesRepo.insertTopHeadlines(it)
                 }
-
                 return@coroutineScope Result.success()
             }
-            Result.failure()
+            Result.retry()
         } catch (exception: Exception) {
-            Result.failure()
+            Result.retry()
         }
     }
 }

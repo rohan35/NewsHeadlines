@@ -29,7 +29,7 @@ data class Article(
     val title: String? = null,
     val url: String? = null,
     val urlToImage: String? = null
-)
+):ComponentViewType(ComponentViewType.VIEW_TYPE_LIST)
 
 data class Source(
     val id: Any,

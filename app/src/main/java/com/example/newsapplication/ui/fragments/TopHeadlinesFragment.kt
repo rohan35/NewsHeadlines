@@ -1,26 +1,33 @@
 package com.example.newsapplication.ui.fragments
 
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.BR
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.TopHeadlinesFragmentBinding
 import com.example.newsapplication.dependencyInjector.DependencyProvider
+import com.example.newsapplication.ui.adapters.InfiniteScrollListener
 import com.example.newsapplication.ui.adapters.TopHeadlinesRecyclerAdapter
 import com.example.newsapplication.ui.viewmodels.TopHeadlinesViewModel
 
-class TopHeadlinesFragment : Fragment() {
+
+class TopHeadlinesFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     private var mBinding: TopHeadlinesFragmentBinding? = null
-    private var mAdapter:TopHeadlinesRecyclerAdapter? = null
-    private lateinit var scrollListener: RecyclerView.OnScrollListener
+    private var mAdapter: TopHeadlinesRecyclerAdapter? = null
+    private lateinit var infiniteScrollListener: InfiniteScrollListener
+
+    // reset recycler view position back state variable
+    var state: Parcelable? = null
+
     companion object {
         fun newInstance() =
             TopHeadlinesFragment()
@@ -40,21 +47,35 @@ class TopHeadlinesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mBinding?.setLifecycleOwner(viewLifecycleOwner)
-        mBinding?.setVariable(BR.viewModel,getViewModel())
+        mBinding?.setVariable(BR.viewModel, getViewModel())
+//        getViewModel().setIsLoading(true)
+        infiniteScrollListener = InfiniteScrollListener(this)
+        // initailise recycler view
         setUpRecyclerView()
+        // get errors
         processErrorLiveData()
+        // process article list
         processArticleList()
-        processAdapterPadding()
+        // remove the loading bar from the list
+        removeLoaderFromAdapterList()
+        // observer loading state
+        observeLoadingState()
+        // observe adapterlist
+        observerAdapterList()
     }
 
-    private fun setUpRecyclerView()
-    {
+    override fun onPause() {
+        super.onPause()
+        state = mBinding?.rvTopHeadlines?.layoutManager?.onSaveInstanceState()
+    }
+
+    private fun setUpRecyclerView() {
         mAdapter =
-            TopHeadlinesRecyclerAdapter(getViewModel().articleList)
+            TopHeadlinesRecyclerAdapter(ArrayList())
         mBinding?.rvTopHeadlines?.adapter = mAdapter
-        setRecyclerViewScrollListener()
+        mBinding?.rvTopHeadlines?.addOnScrollListener(infiniteScrollListener)
         mAdapter!!.onItemClick = {
-            val fragment =  TopHeadlinesDetailsFragment.newInstance(it)
+            val fragment = TopHeadlinesDetailsFragment.newInstance(it)
             activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.container, fragment)
                 ?.addToBackStack(TopHeadlinesDetailsFragment.TAG)
@@ -62,36 +83,40 @@ class TopHeadlinesFragment : Fragment() {
         }
     }
 
-    private fun processAdapterPadding()
-    {
-        getViewModel().adapterPadding.observe(viewLifecycleOwner, Observer {
-            showPadding->
-            if(showPadding)
-            {
-                val padding = resources.getDimensionPixelOffset(R.dimen.dp_50)
-                mBinding?.rvTopHeadlines?.setPadding(0,0,0,padding)
-            }
-            else{
-                mBinding?.rvTopHeadlines?.setPadding(0,0,0,0)
+    /*
+Method to remove loading bar from the list
+    */
+    private fun removeLoaderFromAdapterList() {
+        getViewModel().removeLoader.observe(viewLifecycleOwner, Observer { loader ->
+            if (loader != null && loader) {
+                getViewModel().mergeAdapterList()
             }
         })
     }
 
+    /*
+        Method to observe any errors if occured
+         */
     private fun processErrorLiveData() {
         getViewModel().errorLiveData.observe(viewLifecycleOwner, Observer { response ->
             response?.let { errorResponse ->
                 // show error
-
+                if (!errorResponse.isNullOrBlank()) {
+                    showDialog(errorResponse)
+                    getViewModel().setIsLoading(false)
+                }
             }
         })
     }
 
+    /*
+    Methosd to observe teh database results and show to UI
+     */
     private fun processArticleList() {
         getViewModel().getTopHeadlines()?.observe(viewLifecycleOwner, Observer { response ->
-                if (!response.isNullOrEmpty()) {
-                    getViewModel().articleList = response.toMutableList()
-                    mAdapter?.setData(getViewModel().articleList)
-                    getViewModel().setIsLoading(false)
+            if (!response.isNullOrEmpty()) {
+                getViewModel().articleList = response.toMutableList()
+                getViewModel().mergeAdapterList()
             } else {
                 // make an online request
                 getViewModel().runWorkManager(0)
@@ -99,18 +124,53 @@ class TopHeadlinesFragment : Fragment() {
         })
     }
 
-    private fun setRecyclerViewScrollListener() {
-        scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val totalItemCount = linearLayoutManager.itemCount
-                if (totalItemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
-                    getViewModel().runWorkManager(totalItemCount)
+    /*
+    Method to check the current loading state of loader
+     */
+    private fun observeLoadingState() {
+        getViewModel().getLoadingLiveData()?.observe(viewLifecycleOwner, Observer { state ->
+            if (state != null) {
+                if (state) {
+                    getViewModel().setIsLoading(state)
                 }
             }
+        })
+    }
+
+    /*
+    Method to observe adapter list and show the values to the UI if found
+     */
+    private fun observerAdapterList() {
+        getViewModel().adapterListLiveData.observe(viewLifecycleOwner, Observer { list ->
+            if (!list.isNullOrEmpty()) {
+                // set the data
+                mAdapter?.setData(list)
+                // reset recycler view position back
+                if (state != null) {
+                    mBinding?.rvTopHeadlines?.layoutManager?.onRestoreInstanceState(state)
+                    state = null
+                }
+
+                getViewModel().setIsLoading(false)
+            }
+        })
+    }
+
+    fun showDialog(msg: String) {
+        this.context?.let { context ->
+            val builder =
+                AlertDialog.Builder(context)
+            builder.setTitle(context.getString(R.string.app_name))
+            builder.setMessage(msg)
+            builder.setCancelable(false)
+            builder.setPositiveButton(
+                context.getString(R.string.ok)
+            ) { dialog: DialogInterface, which: Int ->
+                dialog.dismiss()
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
         }
-        mBinding?.rvTopHeadlines?.addOnScrollListener(scrollListener)
     }
 
     /**
@@ -120,5 +180,9 @@ class TopHeadlinesFragment : Fragment() {
         return ViewModelProvider(activity!!, DependencyProvider.getHeadlinesViewModelFactory()).get(
             TopHeadlinesViewModel::class.java
         )
+    }
+
+    override fun onLoadMore(totalItemCount: Int) {
+        getViewModel().runWorkManager(totalItemCount - 1)
     }
 }
